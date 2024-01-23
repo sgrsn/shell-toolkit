@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# トピック名と計測時間を引数から取得、またはデフォルト値を設定
+TOPIC=${1}
+DURATION=${2:-10} # 回数
+
+# トピックからデータを取得し、一定時間後にプロセスを終了する
+rostopic echo -p -n $DURATION $TOPIC > /tmp/topic_data.csv
+
+# CSV ファイルから数値のみを抽出し、平均を計算
+sum=0
+count=0
+while IFS=, read -r timestamp value
+do
+  sum=$(echo "$sum + $value" | bc)
+  ((count++))
+done < <(tail -n +2 /tmp/topic_data.csv) # 先頭のヘッダー行を除外
+
+if [ $count -gt 0 ]; then
+  average=$(echo "scale=10; $sum / $count" | bc)
+  echo "Average: $average"
+else
+  echo "No data received."
+fi
+
+# 一時ファイルの削除
+rm /tmp/topic_data.csv

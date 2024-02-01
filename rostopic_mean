@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TOPIC=${1}
-DURATION=${2:-10} # 秒
+DURATION=${2:-10} # 回数
 
 rostopic echo -p -n $DURATION $TOPIC > /tmp/topic_data.csv
 

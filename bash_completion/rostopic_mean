@@ -1,0 +1,6 @@
+_rostopic_mean_complete() {
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    local IFS=$'\n'
+    COMPREPLY=($(compgen -W "$(rostopic list)" -- ${cur}))
+}
+complete -F _rostopic_mean_complete rostopic_mean
